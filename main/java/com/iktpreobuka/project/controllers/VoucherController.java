@@ -16,13 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.iktpreobuka.project.entities.OfferEntity;
-import com.iktpreobuka.project.entities.UserEntity;
-import com.iktpreobuka.project.entities.UserEntity.UserRole;
 import com.iktpreobuka.project.entities.VoucherEntity;
 import com.iktpreobuka.project.repositories.OfferRepository;
 import com.iktpreobuka.project.repositories.UserRepository;
 import com.iktpreobuka.project.repositories.VoucherRepository;
+import com.iktpreobuka.project.services.VoucherService;
 
 @RestController
 @RequestMapping(path = "project/vouchers")
@@ -36,6 +34,9 @@ public class VoucherController {
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	VoucherService voucherService;
 
 	/*
 	 * 4.3 u paketu com.iktpreobuka.project.controllers napraviti klasu
@@ -55,19 +56,8 @@ public class VoucherController {
 
 	@PostMapping(path = "/{offerId}/buyer/{buyerId}")
 	public VoucherEntity createNewVoucher(@PathVariable Integer offerId, @PathVariable Integer buyerId,
-			@DateTimeFormat(iso = ISO.DATE) @RequestBody VoucherEntity voucher) {
-		if (offerRepository.existsById(offerId)) {
-			if (userRepository.existsById(buyerId)) {
-				UserEntity user = userRepository.findById(buyerId).get();
-				OfferEntity offer = offerRepository.findById(offerId).get();
-				if (user.getUserRole().equals(UserRole.ROLE_CUSTOMER)) {
-					voucher.setUser(user);
-					voucher.setOffer(offer);
-					return voucherRepository.save(voucher);
-				}
-			}
-		}
-		return null;
+			@DateTimeFormat(iso = ISO.DATE) @RequestBody VoucherEntity voucher) throws Exception {
+		return voucherService.createNewVoucher(offerId, buyerId, voucher);
 	}
 
 	/* putanja /project/vouchers/{id} izmena */
@@ -105,7 +95,7 @@ public class VoucherController {
 
 	@GetMapping(path = "/findByBuyer/{buyerId}")
 	public List<VoucherEntity> findVouchersByBuyers(@PathVariable Integer buyerId) {
-		return voucherRepository.findByUserId(buyerId);
+		return voucherRepository.findByBuyerId(buyerId);
 	}
 
 	/*

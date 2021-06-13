@@ -30,12 +30,9 @@ public class BillEntity {
 	private OfferEntity offer;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user")
-	private UserEntity user;
+	@JoinColumn(name = "buyer")
+	private UserEntity buyer;
 
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "category")
-	private CategoryEntity category;
 
 	public BillEntity() {
 		super();
@@ -90,11 +87,11 @@ public class BillEntity {
 	}
 
 	public UserEntity getUser() {
-		return user;
+		return buyer;
 	}
 
 	public void setUser(UserEntity user) {
-		this.user = user;
+		this.buyer = user;
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.iktpreobuka.project.entities;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -56,8 +54,8 @@ public class OfferEntity {
 	private CategoryEntity category;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user")
-	private UserEntity user;
+	@JoinColumn(name = "seller")
+	private UserEntity seller;
 
 	@OneToMany(mappedBy = "offer", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JsonIgnore
@@ -188,11 +186,11 @@ public class OfferEntity {
 	}
 
 	public UserEntity getUser() {
-		return user;
+		return seller;
 	}
 
 	public void setUser(UserEntity user) {
-		this.user = user;
+		this.seller = user;
 	}
 
 }

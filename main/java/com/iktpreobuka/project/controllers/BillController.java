@@ -16,13 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.project.entities.BillEntity;
-import com.iktpreobuka.project.entities.OfferEntity;
-import com.iktpreobuka.project.entities.UserEntity;
-import com.iktpreobuka.project.entities.UserEntity.UserRole;
 import com.iktpreobuka.project.repositories.BillRepository;
 import com.iktpreobuka.project.repositories.CategoryRepository;
 import com.iktpreobuka.project.repositories.OfferRepository;
 import com.iktpreobuka.project.repositories.UserRepository;
+import com.iktpreobuka.project.services.BillService;
 
 @RestController
 @RequestMapping(path = "/project/bills")
@@ -40,6 +38,9 @@ public class BillController {
 	@Autowired
 	CategoryRepository categoryRepository;
 
+	@Autowired
+	private BillService billService;
+
 	/*
 	 * 3.3 u paketu com.iktpreobuka.project.controllers napraviti klasu
 	 * BillController sa REST endpoint om koji vraća listu svih računa • putanja
@@ -52,35 +53,15 @@ public class BillController {
 	}
 
 	/*
-	 * 3.6 kreirati REST endpoint ove za dodavanje , izmenu i brisanje računa •
-	 * putanja /project/ offerId }/ buyerId } dodavanje
-	 */
-
-	/*
 	 * 5. 1 proširiti metodu za dodavanje računa tako da se smanji broj dostupnih
 	 * ponuda ponude sa računa , odnosno poveća broj kupljenih
 	 */
 
 	@PostMapping(path = "/{offerId}/buyer/{buyerId}")
 	public BillEntity createBillWihtOfferAndBuyey(@PathVariable Integer offerId, @PathVariable Integer buyerId,
-			@DateTimeFormat(iso = ISO.DATE) @RequestBody BillEntity bill) {
-		if (offerRepository.existsById(offerId)) {
-			if (userRepository.existsById(buyerId)) {
-				UserEntity user = userRepository.findById(buyerId).get();
-				OfferEntity offer = offerRepository.findById(offerId).get();
-				bill.setUser(user);
-				bill.setOffer(offer);
-				bill.getOffer().setAvailableOffers(bill.getOffer().getAvailableOffers() - 1);
-				bill.getOffer().setBoughtOffers(bill.getOffer().getBoughtOffers() + 1);
-				offerRepository.save(offer);
-				return billRepository.save(bill);
-			}
-		}
-		return null;
+			@DateTimeFormat(iso = ISO.DATE) @RequestBody BillEntity bill) throws Exception {
+		return billService.createBillWihtOfferAndBuyey(offerId, buyerId, bill);
 	}
-	/*
-	 * • putanja /project/bills/{ izmena i brisanje
-	 */
 
 	/*
 	 * 5. 2 proširiti metodu za izmenu računa tako da ukoliko se račun proglašava
@@ -90,23 +71,8 @@ public class BillController {
 
 	@PutMapping(path = "/{id}")
 	public BillEntity changeBill(@PathVariable Integer id,
-			@DateTimeFormat(iso = ISO.DATE) @RequestBody BillEntity changeBill) {
-		if (billRepository.existsById(id)) {
-			BillEntity bill = billRepository.findById(id).get();
-			if (changeBill.getPaymentMade() != null)
-				bill.setPaymentMade(changeBill.getPaymentMade());
-			if (changeBill.getPaymentCanceled() != null) {
-				bill.setPaymentCanceled(changeBill.getPaymentCanceled());
-				if (bill.getPaymentCanceled()) {
-					bill.getOffer().setAvailableOffers(bill.getOffer().getAvailableOffers() + 1);
-					bill.getOffer().setBoughtOffers(bill.getOffer().getBoughtOffers() - 1);
-				}
-			}
-			if (changeBill.getBillCreated() != null)
-				bill.setBillCreated(changeBill.getBillCreated());
-			return billRepository.save(bill);
-		}
-		return null;
+			@DateTimeFormat(iso = ISO.DATE) @RequestBody BillEntity changeBill) throws Exception {
+		return billService.changeBill(id, changeBill);
 	}
 
 	@DeleteMapping(path = "/{id}")
@@ -126,7 +92,7 @@ public class BillController {
 
 	@GetMapping(path = "/findByBuyer/{buyerId}")
 	public List<BillEntity> findBillByBuyer(@PathVariable Integer buyerId) {
-		return billRepository.findByUserId(buyerId);
+		return billRepository.findByBuyerId(buyerId);
 	}
 
 	/*
@@ -136,7 +102,7 @@ public class BillController {
 	@GetMapping(path = "/findByCategory/{categoryId}")
 	public List<BillEntity> findBillByCategory(@PathVariable Integer categoryId) {
 		if (categoryRepository.existsById(categoryId)) {
-			return billRepository.findByOfferCategory(categoryRepository.findById(categoryId).get());
+			return billRepository.findByOfferCategoryId(categoryId);
 		}
 		return null;
 	}
@@ -150,6 +116,7 @@ public class BillController {
 	@GetMapping(path = "/findByDate/{startDate}/and/{endDate}")
 	public List<BillEntity> findBillByDate(@DateTimeFormat(iso = ISO.DATE) @PathVariable LocalDate startDate,
 			@DateTimeFormat(iso = ISO.DATE) @PathVariable LocalDate endDate) {
-		return (List<BillEntity>) billRepository.findByBillCreatedBetween(startDate, endDate);
+		return billService.findBillsCreatedBetween(startDate, endDate);
 	}
+
 }

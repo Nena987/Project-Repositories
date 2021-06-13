@@ -27,27 +27,8 @@ public class UserController {
 	private UserRepository userRepository;
 
 	/*
-	 * 1.2 u paketu com.iktpreobuka.project.controllers napraviti klasu
-	 * UserController sa metodom getDB koja vraća listu svih korisnika aplikacije
-	 */
-	/*
-	 * private List<UserEntity> getDB() { if (users.size() == 0) { UserEntity u1 =
-	 * new UserEntity(1, "Nevenka", "Mrdakovic", "Nena", "Nena", "nena@gmail.com",
-	 * UserRole.ROLE_CUSTOMER); UserEntity u2 = new UserEntity(2, "Pera", "Kojot",
-	 * "Pera", "Kojot", "kojot@gmail.com", UserRole.ROLE_CUSTOMER); UserEntity u3 =
-	 * new UserEntity(3, "Dusko", "Dugousko", "Dusko", "Dugi", "dule@gmail.com",
-	 * UserRole.ROLE_CUSTOMER); users.add(u1); users.add(u2); users.add(u3); }
-	 * 
-	 * return users; }
-	 */
-
-	/*
 	 * 1.3 kreirati REST endpoint koji vraća listu korisnika aplikacije • putanja
 	 * /project/users
-	 */
-	/*
-	 * @RequestMapping(method = RequestMethod.GET, value = "/users") public
-	 * List<UserEntity> getAll() { return getDB(); }
 	 */
 
 	@GetMapping
@@ -74,25 +55,6 @@ public class UserController {
 	 * /project/users • u okviru ove metode postavi vrednost atributa user role na
 	 * ROLE_CUSTOMER • metoda treba da vrati dodatog korisnika
 	 */
-	/*
-	 * @RequestMapping(method = RequestMethod.POST, value = "/users") public
-	 * UserEntity createNewUser(@RequestBody UserEntity newUser) {
-	 * newUser.setId((new Random().nextInt()));
-	 * newUser.setUserRole(UserRole.ROLE_CUSTOMER); users.add(newUser); return
-	 * newUser; }
-	 */
-
-	/*
-	 * @RequestMapping(method = RequestMethod.POST, path = "/") public UserEntity
-	 * createNewUser(@RequestParam String firstName, @RequestParam String lastName,
-	 * 
-	 * @RequestParam String username, @RequestParam String password, @RequestParam
-	 * String email,
-	 * 
-	 * @RequestParam UserRole userRole) { UserEntity user = new
-	 * UserEntity(firstName, lastName, username, password, email, userRole);
-	 * userRepository.save(user); return user; }
-	 */
 
 	@PostMapping
 	public UserEntity createNewUser(@RequestBody UserEntity user) {
@@ -106,17 +68,6 @@ public class UserController {
 	 * korisniku metoda treba da vrati null , a u suprotnom vraća podatke korisnika
 	 * sa izmenjenim vrednostima • NAPOMENA: u okviru ove metode ne menjati vrednost
 	 * atributa user role i password
-	 */
-	/*
-	 * @RequestMapping(method = RequestMethod.PUT, value = "/users/{id}") public
-	 * UserEntity changeOneUser(@RequestBody UserEntity changeUser, @PathVariable
-	 * Integer id) { for (UserEntity user : getDB()) { if (user.getId().equals(id))
-	 * { if (changeUser.getFirstName() != null)
-	 * user.setFirstName(changeUser.getFirstName()); if (changeUser.getLastName() !=
-	 * null) user.setFirstName(changeUser.getFirstName()); if (changeUser.getEmail()
-	 * != null) user.setEmail(changeUser.getEmail()); if (changeUser.getUsername()
-	 * != null) user.setUsername(changeUser.getUsername()); return user; } } return
-	 * null; }
 	 */
 	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
 	public UserEntity changeOneUser(@RequestBody UserEntity changeUser, @PathVariable Integer id) {
@@ -142,13 +93,6 @@ public class UserController {
 	 * , a u suprotnom vraća podatke korisnika sa izmenjenom vrednošću atributa user
 	 * role
 	 */
-	/*
-	 * @RequestMapping(method = RequestMethod.PUT, value =
-	 * "/users/{id}/role/{role}") public UserEntity changeOneUserRole(@PathVariable
-	 * Integer id, @PathVariable UserRole role) { for (UserEntity user : getDB()) {
-	 * if (user.getId().equals(id)) { user.setUserRole(role); return user; } }
-	 * return null; }
-	 */
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/role/{role}")
 	public UserEntity changeOneUserRole(@PathVariable Integer id, @PathVariable UserRole role) {
 		if (userRepository.existsById(id)) {
@@ -169,17 +113,6 @@ public class UserController {
 	 * neophodno je da se vrednost stare lozinke korisnika poklapa sa vrednošću
 	 * stare lozinke prosleđene kao RequestParam
 	 */
-	/*
-	 * @RequestMapping(method = RequestMethod.PUT, value =
-	 * "/users/changePassword/{id}") public UserEntity
-	 * changeOnePassword(@RequestParam String oldPass, @RequestParam String newPass,
-	 * 
-	 * @PathVariable Integer id) { for (UserEntity user : getDB()) { if
-	 * (user.getId().equals(id)) { if (user.getPassword().equals(oldPass)) {
-	 * user.setPassword(newPass); } return user; }
-	 * 
-	 * } return null; }
-	 */
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/changePassword/{id}")
 	public UserEntity changeOnePassword(@RequestParam String oldPass, @RequestParam String newPass,
@@ -199,14 +132,6 @@ public class UserController {
 	 * korisniku metoda treba da vrati null , a u suprotnom vraća podatke o
 	 * korisniku koji je obrisan
 	 */
-	/*
-	 * @RequestMapping(method = RequestMethod.DELETE, value = "/users/{id}") public
-	 * UserEntity deleteUser(@PathVariable Integer id) {
-	 * 
-	 * Iterator<UserEntity> it = getDB().iterator(); while (it.hasNext()) {
-	 * UserEntity user = it.next(); if (user.getId().equals(id)) { it.remove();
-	 * return user; } } return null; }
-	 */
 
 	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
 	public UserEntity removeUser(@PathVariable Integer id) {
@@ -223,20 +148,10 @@ public class UserController {
 	 * username a • putanja /project/users/by username/{username} • u slučaju da ne
 	 * postoji korisnik sa traženim username om vratiti null
 	 */
-	/*
-	 * @RequestMapping(method = RequestMethod.GET, value =
-	 * "/users/by-username/{username}") public UserEntity
-	 * findUserByUsername(@PathVariable String username) { for (UserEntity user :
-	 * getDB()) { if (user.getUsername().equalsIgnoreCase(username)) return user; }
-	 * return null;
-	 * 
-	 * }
-	 */
+
 	@RequestMapping(method = RequestMethod.GET, path = "/by-username/{username}")
 	public UserEntity findByUsername(@PathVariable String username) {
 		UserEntity user = userRepository.findByUsername(username);
 		return user;
-
 	}
-
 }

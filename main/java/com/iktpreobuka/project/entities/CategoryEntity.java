@@ -9,14 +9,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.iktpreobuka.project.repositories.OfferRepository;
 
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
@@ -24,7 +20,7 @@ public class CategoryEntity {
 	
 	@Id
 	@GeneratedValue (strategy = GenerationType.AUTO)
-	protected Integer Id;
+	protected Integer id;
 	@Column (nullable = false)
 	protected String categoryName;
 	@Column
@@ -35,10 +31,6 @@ public class CategoryEntity {
 	@Column (name = "offers")
 	public List<OfferEntity> offers;
 	
-	@OneToMany(mappedBy = "category", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JsonIgnore
-	@Column (name = "bills")
-	public List<BillEntity> bills;
 	
 	public CategoryEntity() {
 		super();
@@ -49,10 +41,10 @@ public class CategoryEntity {
 		this.categoryDescription = categoryDescription;
 	}
 	public Integer getId() {
-		return Id;
+		return id;
 	}
 	public void setId(Integer id) {
-		Id = id;
+		id = id;
 	}
 	public String getCategoryName() {
 		return categoryName;

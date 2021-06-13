@@ -9,7 +9,7 @@ import com.iktpreobuka.project.entities.VoucherEntity;
 
 public interface VoucherRepository extends CrudRepository<VoucherEntity, Integer> {
 
-	public List<VoucherEntity> findByUserId(Integer buyerId);
+	public List<VoucherEntity> findByBuyerId(Integer buyerId);
 
 	public List<VoucherEntity> findByOfferId(Integer offerId);
 	

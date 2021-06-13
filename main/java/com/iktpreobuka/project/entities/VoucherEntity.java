@@ -28,8 +28,8 @@ public class VoucherEntity {
 	private OfferEntity offer;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user")
-	private UserEntity user;
+	@JoinColumn(name = "buyer")
+	private UserEntity buyer;
 
 	public VoucherEntity() {
 		super();
@@ -74,11 +74,11 @@ public class VoucherEntity {
 	}
 
 	public UserEntity getUser() {
-		return user;
+		return buyer;
 	}
 
 	public void setUser(UserEntity user) {
-		this.user = user;
+		this.buyer = user;
 	}
 	
 	
