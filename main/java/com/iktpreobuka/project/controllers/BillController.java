@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.project.entities.BillEntity;
+import com.iktpreobuka.project.entities.dto.BillDTO;
 import com.iktpreobuka.project.repositories.BillRepository;
 import com.iktpreobuka.project.repositories.CategoryRepository;
 import com.iktpreobuka.project.repositories.OfferRepository;
@@ -55,11 +57,15 @@ public class BillController {
 	/*
 	 * 5. 1 proširiti metodu za dodavanje računa tako da se smanji broj dostupnih
 	 * ponuda ponude sa računa , odnosno poveća broj kupljenih
+	 * 
+	 * 
+	 * 1 5 Izmeniti kontroler tako da koristi BillDTO prilikom pravljenja novog Bill
+	 * a
 	 */
 
 	@PostMapping(path = "/{offerId}/buyer/{buyerId}")
-	public BillEntity createBillWihtOfferAndBuyey(@PathVariable Integer offerId, @PathVariable Integer buyerId,
-			@DateTimeFormat(iso = ISO.DATE) @RequestBody BillEntity bill) throws Exception {
+	public ResponseEntity<?> createBillWihtOfferAndBuyey(@PathVariable Integer offerId, @PathVariable Integer buyerId,
+			@DateTimeFormat(iso = ISO.DATE) @RequestBody BillDTO bill) throws Exception {
 		return billService.createBillWihtOfferAndBuyey(offerId, buyerId, bill);
 	}
 

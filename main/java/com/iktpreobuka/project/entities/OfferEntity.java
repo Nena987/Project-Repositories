@@ -13,9 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sun.istack.NotNull;
 
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
@@ -28,24 +32,46 @@ public class OfferEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Integer id;
+
+	@NotBlank(message = "Offer name must not be null or blank.")
 	@Column(name = "Offer_name")
 	protected String offerName;
+
+	@NotBlank(message = "Offer descritpion must not be null or blank.")
+	@Size(min = 5, max = 20, message = "Offer description must have between {min} and {max} characters.")
 	@Column(name = "Offer_description")
 	protected String offerDescription;
+
 	@Column(name = "Offer_created")
 	protected LocalDate offerCreated;
-	@Column(name = "Offer_epires")
+
+	@Column(name = "Offer_expires")
 	protected LocalDate offerExpires;
+
+	@NotNull
+	@Min(value = 1, message = "Regular price cannot be lower than 1.")
 	@Column(name = "Regular_price")
 	protected Double regularPrice;
+
+	@NotNull
+	@Min(value = 1, message = "Action price cannot be lower than 1.")
 	@Column(name = "Action_price")
 	protected Double actionPrice;
+
+	@NotBlank(message = "Image path must not be null or blank.")
 	@Column(name = "Image_path")
 	protected String imagePath;
+
+	@NotNull
+	@Min(value = 0, message = "Number od available offers cannot be under 0.")
 	@Column(name = "Available_offers")
 	protected Integer availableOffers;
+
+	@NotNull
+	@Min(value = 0, message = "Number od bought offers cannot be under 0.")
 	@Column(name = "Bought_offers")
 	protected Integer boughtOffers;
+
 	@Column(name = "Offer_status")
 	protected OfferStatus offerStatus;
 

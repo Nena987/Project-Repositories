@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,7 +42,8 @@ public class UserController {
 	 * • putanja /project/users/{ • u slučaju da ne postoji korisnik sa traženom
 	 * vrednošću ID a vratiti null
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+
+	@GetMapping(path = "/{id}")
 	public UserEntity findUserById(@PathVariable Integer id) {
 		if (userRepository.existsById(id)) {
 			UserEntity user = userRepository.findById(id).get();
@@ -69,7 +71,8 @@ public class UserController {
 	 * sa izmenjenim vrednostima • NAPOMENA: u okviru ove metode ne menjati vrednost
 	 * atributa user role i password
 	 */
-	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
+
+	@PutMapping(path = "/{id}")
 	public UserEntity changeOneUser(@RequestBody UserEntity changeUser, @PathVariable Integer id) {
 		if (userRepository.existsById(id)) {
 			UserEntity user = userRepository.findById(id).get();
@@ -93,7 +96,7 @@ public class UserController {
 	 * , a u suprotnom vraća podatke korisnika sa izmenjenom vrednošću atributa user
 	 * role
 	 */
-	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/role/{role}")
+	@PutMapping(path = "/{id}/role/{role}")
 	public UserEntity changeOneUserRole(@PathVariable Integer id, @PathVariable UserRole role) {
 		if (userRepository.existsById(id)) {
 			UserEntity user = userRepository.findById(id).get();
@@ -114,7 +117,7 @@ public class UserController {
 	 * stare lozinke prosleđene kao RequestParam
 	 */
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/changePassword/{id}")
+	@PutMapping(path = "changePassword/{id}")
 	public UserEntity changeOnePassword(@RequestParam String oldPass, @RequestParam String newPass,
 			@PathVariable Integer id) {
 		if (userRepository.existsById(id)) {
@@ -133,7 +136,7 @@ public class UserController {
 	 * korisniku koji je obrisan
 	 */
 
-	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
+	@DeleteMapping(path = "i{id}")
 	public UserEntity removeUser(@PathVariable Integer id) {
 		if (userRepository.existsById(id)) {
 			UserEntity user = userRepository.findById(id).get();
@@ -149,7 +152,7 @@ public class UserController {
 	 * postoji korisnik sa traženim username om vratiti null
 	 */
 
-	@RequestMapping(method = RequestMethod.GET, path = "/by-username/{username}")
+	@GetMapping(path = "/by-username/{username}")
 	public UserEntity findByUsername(@PathVariable String username) {
 		UserEntity user = userRepository.findByUsername(username);
 		return user;

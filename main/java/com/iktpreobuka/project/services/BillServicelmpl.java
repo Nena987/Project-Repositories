@@ -11,6 +11,8 @@ import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.iktpreobuka.project.entities.BillEntity;
 import com.iktpreobuka.project.entities.OfferEntity;
 import com.iktpreobuka.project.entities.UserEntity;
+import com.iktpreobuka.project.entities.dto.BillDTO;
 import com.iktpreobuka.project.repositories.BillRepository;
 import com.iktpreobuka.project.repositories.CategoryRepository;
 import com.iktpreobuka.project.repositories.OfferRepository;
 import com.iktpreobuka.project.repositories.UserRepository;
+import com.iktpreobuka.project.controllers.util.RESTError;
 
 @Service
 public class BillServicelmpl implements BillService {
@@ -92,18 +96,23 @@ public class BillServicelmpl implements BillService {
 	 * zaduženog za rad sa ponudama
 	 */
 
-	public BillEntity createBillWihtOfferAndBuyey(@PathVariable Integer offerId, @PathVariable Integer buyerId,
-			@DateTimeFormat(iso = ISO.DATE) @RequestBody BillEntity bill) {
+	public ResponseEntity<?> createBillWihtOfferAndBuyey(@PathVariable Integer offerId, @PathVariable Integer buyerId,
+			@DateTimeFormat(iso = ISO.DATE) @RequestBody BillDTO newBill)  {
 		if (offerRepository.existsById(offerId)) {
 			if (userRepository.existsById(buyerId)) {
 				UserEntity user = userRepository.findById(buyerId).get();
 				OfferEntity offer = offerService.changeAvailableOffers(offerId);
+				BillEntity bill = new BillEntity();
 				bill.setUser(user);
 				bill.setOffer(offer);
-				return billRepository.save(bill);
+				bill.setPaymentMade(newBill.getPaymentMade());
+				bill.setPaymentCanceled(newBill.getPaymentCanceled());
+				bill.setBillCreated(newBill.getBillCreated());
+				billRepository.save(bill);
+				return new ResponseEntity<BillEntity>(bill, HttpStatus.CREATED);
 			}
 		}
-		return null;
+		return new ResponseEntity<RESTError>(new RESTError(1, "Bill not found."), HttpStatus.NOT_FOUND);
 	}
 
 	/*
@@ -157,6 +166,7 @@ public class BillServicelmpl implements BillService {
 		List<BillEntity> bills = billRepository.findByOfferId(offerId);
 		for (BillEntity bill : bills) {
 			bill.setPaymentCanceled(true);
+			bill.setPaymentMade(false);
 			billRepository.save(bill);
 		}
 		return bills;

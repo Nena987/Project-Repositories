@@ -10,48 +10,67 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sun.istack.NotNull;
 
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class UserEntity {
-	
+
 	public enum UserRole {
-		ROLE_CUSTOMER, ROLE_ADMIN, ROLE_SELLER}
-	
+		ROLE_CUSTOMER, ROLE_ADMIN, ROLE_SELLER
+	}
+
 	@Id
-	@GeneratedValue (strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Integer id;
-	@Column (name = "First_name")
+
+	@NotBlank(message = "First name must not be null or blank.")
+	@Column(name = "First_name")
 	protected String firstName;
-	@Column (name = "Last_name")
+
+	@NotBlank(message = "Last name must not be null or blank.")
+	@Column(name = "Last_name")
 	protected String lastName;
-	@Column (name = "Username")
+
+	@NotBlank(message = "Username must not be null or blank.")
+	@Column(name = "Username")
+	@Size(min = 5, max = 20, message = "User name must have between {min} and {max} characters.")
 	protected String username;
-	@Column (name = "Password")
+
+	@NotBlank(message = "Password must not be null or blank.")
+	@Size(min = 5, message = "Password must have al least {min} characters.")
+	@Pattern(regexp = "[a-zA-Z0-9]", message = "Password is not valid.")
+	@Column(name = "Password")
 	protected String password;
-	@Column (name = "Email")
+
+	@NotBlank(message = "Email must not be null or blank.")
+	@Column(name = "Email")
 	protected String email;
-	@Column (name = "User_Role")
-    protected UserRole userRole;
-	
+
+	@Column(name = "User_Role")
+	protected UserRole userRole;
+
 	@OneToMany(mappedBy = "seller", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JsonIgnore
-	@Column (name = "offers")
+	@Column(name = "offers")
 	public List<OfferEntity> offers;
-	
+
 	@OneToMany(mappedBy = "buyer", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JsonIgnore
-	@Column (name = "bills")
+	@Column(name = "bills")
 	public List<BillEntity> bills;
-	
+
 	@OneToMany(mappedBy = "buyer", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JsonIgnore
-	@Column (name = "vouchers")
+	@Column(name = "vouchers")
 	public List<VoucherEntity> vouchers;
-    
+
 	public UserEntity() {
 		super();
 	}
@@ -122,8 +141,5 @@ public class UserEntity {
 	public void setUserRole(UserRole userRole) {
 		this.userRole = userRole;
 	}
-	
-	
-    
 
 }

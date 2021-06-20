@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.project.entities.VoucherEntity;
+import com.iktpreobuka.project.entities.dto.VoucherDTO;
 import com.iktpreobuka.project.repositories.OfferRepository;
 import com.iktpreobuka.project.repositories.UserRepository;
 import com.iktpreobuka.project.repositories.VoucherRepository;
@@ -55,8 +57,8 @@ public class VoucherController {
 	 */
 
 	@PostMapping(path = "/{offerId}/buyer/{buyerId}")
-	public VoucherEntity createNewVoucher(@PathVariable Integer offerId, @PathVariable Integer buyerId,
-			@DateTimeFormat(iso = ISO.DATE) @RequestBody VoucherEntity voucher) throws Exception {
+	public ResponseEntity<?> createNewVoucher(@PathVariable Integer offerId, @PathVariable Integer buyerId,
+			@DateTimeFormat(iso = ISO.DATE) @RequestBody VoucherDTO voucher) throws Exception {
 		return voucherService.createNewVoucher(offerId, buyerId, voucher);
 	}
 

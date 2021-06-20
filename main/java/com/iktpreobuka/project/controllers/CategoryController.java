@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -63,7 +64,7 @@ public class CategoryController {
 	 * kategorije sa izmenjenim vrednostima
 	 */
 
-	@RequestMapping(method = RequestMethod.PUT, path = "/{id}")
+	@PutMapping(path = "/{id}")
 	public CategoryEntity changeOneCategory(@RequestBody CategoryEntity changeCategory, @PathVariable Integer id) {
 		if (categoryRepository.existsById(id)) {
 			CategoryEntity category = categoryRepository.findById(id).get();
@@ -81,7 +82,7 @@ public class CategoryController {
 	 * CategoryController a
 	 */
 
-	@RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
+	@DeleteMapping(path = "/{id}")
 	public CategoryEntity removeCategory(@PathVariable Integer id) {
 
 		if (categoryRepository.existsById(id)) {
@@ -103,7 +104,7 @@ public class CategoryController {
 	 * traženom vrednošću ID a vratiti null
 	 */
 
-	@RequestMapping(method = RequestMethod.GET, path = "/{id}")
+	@GetMapping(path = "/{id}")
 	public CategoryEntity findOneCategory(@PathVariable Integer id) {
 		if (categoryRepository.existsById(id)) {
 			return categoryRepository.findById(id).get();
